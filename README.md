@@ -14,4 +14,6 @@ mpicc -o game_of_life_mpi src/game_of_life_mpi.cpp
 
 
 ### Personal note for me for now:
-mpirun -np <num_processes> ./game_of_life_mpi <board_size> <max_iterations> <output_directory>
+mpicc -o game_of_life_mpi src/game_of_life_mpi.cpp -lstdc++ -std=c++11
+
+mpirun -np 4 ./game_of_life_mpi 100 100 /Users/brianson/Desktop/cs481/hw4/FALL2024_CS481_HW4/output
