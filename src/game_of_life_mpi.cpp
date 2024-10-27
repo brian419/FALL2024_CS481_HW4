@@ -81,7 +81,10 @@ bool isBoardSame(const int *board1, const int *board2, int size) {
 // this function will write the final board to a file (rank 0 only)
 void writingFinalBoardToFile(const int *board, const string &outputDirectory, int generation, int boardSize, int numProcesses) {
     creatingOutputDirectory(outputDirectory);
-    ofstream outFile(outputDirectory + "/final_board_size_" + to_string(boardSize) + "_gen_" + to_string(generation) + "_procs_" + to_string(numProcesses) + ".txt");
+    
+    string fileName = outputDirectory + "/hw4_final_board_5000_procs_" + to_string(numProcesses) + "_gen_" + to_string(generation) + "_testcase.txt";
+    ofstream outFile(fileName);
+    
     for (int i = 0; i < boardSize; ++i) {
         for (int j = 0; j < boardSize; ++j) {
             outFile << (board[i * boardSize + j] ? '*' : '.') << " ";
@@ -90,6 +93,7 @@ void writingFinalBoardToFile(const int *board, const string &outputDirectory, in
     }
     outFile.close();
 }
+
 
 // this function will exchange ghost rows between neighboring processes
 void exchangeGhostRows(int *board, int boardSize, int local_rows, int rank, int size) {
