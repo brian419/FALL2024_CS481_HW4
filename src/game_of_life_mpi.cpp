@@ -8,6 +8,7 @@
     Note: I had to run conda install clangxx_osx-64 before i could run compilation
     mpirun -np 4 ./game_of_life_mpi 100 100 /path/to/output
     ex: mpirun -np 4 ./game_of_life_mpi 100 100 /Users/brianson/Desktop/cs481/hw4/FALL2024_CS481_HW4/output
+    for the cluster: mpirun -np 4 ./game_of_life_mpi 5000 5000 /scratch/ualclsd0197/output_dir
 */
 
 #include <iostream>
