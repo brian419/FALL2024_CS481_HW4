@@ -10,7 +10,7 @@
     for the cluster: mpirun -np 4 ./game_of_life_mpi 5000 5000 /scratch/ualclsd0197/output_dir
 
     mpicc -o game_of_life_mpi src/game_of_life_mpi.cpp -lstdc++ -std=c++11
-    mpirun -np 4 ./game_of_life_mpi 100 100 /Users/brianson/Desktop/cs481/hw4/FALL2024_CS481_HW4/output
+    mpirun -np 4 ./game_of_life_mpi 1000 1000 /Users/brianson/Desktop/cs481/hw4/FALL2024_CS481_HW4/output
 */
 
 #include <iostream>
@@ -82,18 +82,35 @@ void nextGeneration(int *current, int *next, int boardSize, int local_rows)
 }
 
 // this function will check if the two boards are the same
-bool isBoardSame(const int *board1, const int *board2, int size)
+// bool isBoardSame(const int *board1, const int *board2, int size)
+// {
+//     for (int i = 0; i < size * size; ++i)
+//     {
+//         if (board1[i] != board2[i])
+//         {
+//             cout << "Different at index " << i << endl;
+//             return false;
+//         }
+//     }
+//     return true;
+// }
+
+bool isBoardSame(const int *board1, const int *board2, int boardSize, int local_rows)
 {
-    for (int i = 0; i < size * size; ++i)
+    for (int i = 1; i < local_rows - 1; ++i) 
     {
-        if (board1[i] != board2[i])
+        for (int j = 0; j < boardSize; ++j)
         {
-            // cout << "Different at index " << i << endl;
-            return false;
+            int index = i * boardSize + j;
+            if (board1[index] != board2[index])
+            {
+                return false;
+            }
         }
     }
     return true;
 }
+
 
 // this function will write the final board to a file (rank 0 only)
 void writingFinalBoardToFile(const int *board, const string &outputDirectory, int generation, int boardSize, int numProcesses)
@@ -163,8 +180,9 @@ int main(int argc, char *argv[])
     int *board = new int[local_rows * boardSize]();
     int *nextGenerationBoard = new int[local_rows * boardSize]();
 
-    srand(12345); // use the same seed for the random number generator for both the sequential and parallel version of the programs
+    // srand(12345); // use the same seed for the random number generator for both the sequential and parallel version of the programs
 
+    srand(time(nullptr));
     // random board initialization
     for (int i = 1; i < local_rows - 1; ++i)
     {
@@ -173,6 +191,7 @@ int main(int argc, char *argv[])
             board[i * boardSize + j] = rand() % 2;
         }
     }
+
 
     auto start = high_resolution_clock::now();
 
@@ -185,13 +204,16 @@ int main(int argc, char *argv[])
 
         nextGeneration(board, nextGenerationBoard, boardSize, local_rows);
 
-        noChange = isBoardSame(board, nextGenerationBoard, boardSize);
+        // noChange = isBoardSame(board, nextGenerationBoard, boardSize);
+        noChange = isBoardSame(board, nextGenerationBoard, boardSize, local_rows);
+
+        MPI_Allreduce(MPI_IN_PLACE, &noChange, 1, MPI_C_BOOL, MPI_LAND, MPI_COMM_WORLD);
+
 
         int *temp = board;
         board = nextGenerationBoard;
         nextGenerationBoard = temp;
 
-        MPI_Allreduce(MPI_IN_PLACE, &noChange, 1, MPI_C_BOOL, MPI_LAND, MPI_COMM_WORLD);
 
         generation++;
     }
