@@ -1,0 +1,1 @@
+ERROR:  ASA-X uses mpiexec or mpirun in place of srun

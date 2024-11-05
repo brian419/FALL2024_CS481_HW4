@@ -1,0 +1,9 @@
+Starting job script at Tue Oct 29 16:04:50 CDT 2024
+Current working directory: /home/ualclsd0197/FALL2024_CS481_HW4
+Loading OpenMPI module...
+Compiling the MPI program...
+Compilation successful
+Creating output directory at /scratch/ualclsd0197/output_dir
+Running the MPI program...
+Simulation completed in 1000 generations and took 11368 ms.
+Job completed successfully at Tue Oct 29 16:05:09 CDT 2024
